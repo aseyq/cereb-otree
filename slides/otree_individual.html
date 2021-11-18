@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Individual Decisions in oTree</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ali Seyhun Saral" />
+    <meta name="date" content="2021-11-18" />
+    <script src="libs/header-attrs-2.8/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Individual Decisions in oTree
+### Ali Seyhun Saral
+### 18 Nov 2021
+
+---
+
+&lt;style type="text/css"&gt;
+.remark-code, .remark-inline-code {
+  font-size: 80%;
+  color: blue;
+	background-color: rgba(222,222,222,0.3);
+}
+.titletext {
+	font-size: 400%;
+  display:inline-block; 
+}
+
+.smaller {
+	font-size: 70%;
+  display:inline-block; 
+}
+&lt;/style&gt;
+
+
+# Individual Decisions in oTree
+* Although oTree is designed for multiplayer games, it is also suitable for individual decision making experiments
+
+--
+
+* Usually we need only `Player` and `Constants` class
+---
+# Usual steps to create an oTree experiment
+1\. Create a project (top level oTree installation)
+
+--
+
+  
+  ```bash
+  otree startproject oTree 
+  # or any other name instead of 'oTree'
+  ```
+  
+--
+
+2\. Create an app (or multiple apps for the project)
+
+--
+
+  
+  ```bash
+  otree startapp APPNAME
+  # whatever app name you prefer
+  ```
+  
+3\. Register the app in `settings.py`
+
+--
+
+  
+  ```python
+  SESSION_CONFIGS = [
+      dict(
+        name='my_survey',
+        app_sequence=['my_survey'],
+        num_demo_participants=50,
+     ),
+  ]
+  ```
+
+---
+# Usual steps to create an oTree experiment
+
+4\. Implement your data structure (** your models**)
+--
+
+  * Go to `__init__.py` and
+  * Add your fields in `Player` and `Group` classes
+  
+  
+  ```python
+  class Player(BasePlayer):
+    name = models.StringField(blank=True, label="Your name (optional)")
+    ...
+  ```
+
+--
+
+5\. Implement your **pages** in Python
+
+--
+
+  * Go to `__init__.py` and create a class for each page 
+  
+  
+  ```python
+  class Survey(Page):
+      form_model = "player"
+      form_fields = ['name', 'age', 'mood', 'wants_feedback']
+  ```
+
+--
+
+6\.  Create HTML **templates** for your pages
+--
+
+  * Each html must have the same name with the Page class you created.
+    * For instance `Survey.html`
+  * oTree automatically handles most of it.
+
+---
+# Let's create a survey for our employees
+.pull-left[
+&lt;img src="images/survey_preview.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+--
+
+.pull-right[
+* We would like to have the following columns:
+  * `name`: Participant Name (optional)
+  
+  * `age` : Age
+  
+  * `mood`: How do they feel today? Categorical: `bad`, `okay`, `wonderful`
+  
+  * `wants_feedback`: Yes or No
+  
+  * `comments`: Text
+]  
+---
+# Creating Fields in our models
+
+| Variable          |  Field Type      |
+|-------------------|------------------|
+| `name`            | `StringField`    |
+| `age`             | `IntegerField`   | 
+| `mood`            | `StringField`    |
+| `wants_feedback`  | `BooleanField`   |
+| `comments`        | `LongStringField`|
+
+* Each field will be defined under `Player` class
+
+---
+# Fields 
+* Fields create the data structure to record the data. They can be thought as “columns” in a spreadsheet. 
+* They are placed in Player or Group classes in `__init__.py`
+* You can create a field for form input, or to save the data without an explicit input
+
+| Field Name      | What for?                  | Example                                  |
+|-----------------|----------------------------|------------------------------------------|
+| StringField     | Short text, Categories     | `department = Models.StingField()`       |
+| IntegerField    | Integer (whole numbers)    | `age = Models.IntegerField()`            |
+| FloatField      | Decimals                   | `percentage = Models.FloatField()`       |
+| BooleanField    | True or False              | `is_dictator = Models.BooleanField()`    |
+| CurrencyField   | Numbers in currency format | `earned_stage1 = Models.CurrencyField()` |
+| LongStringField | Long test                  | `diary_entry = Models.LongStringField()` |
+---
+# Some field options
+.smaller[
+* Adding labels
+  
+  ```python
+   models.StringField(label = “What is your name”)
+  ```
+
+* Minimum, maximum
+  
+  ```python
+  models.IntegerField(min = 18, max = 117)
+  ```
+* Empty allowed
+  
+  ```python
+  models.Integerfield(blank = True)
+  ```
+* Default Value
+  
+  ```python
+  models.IntegerField(initial = 20)
+  ```
+
+* Multiple choices
+  
+  ```python
+  department = models.StringField(choices = [“Economics”, “Law”])
+  ```
+* Radio buttons 
+  
+  ```python
+  department = models.StringField(choices = [“Economics”, “Law”], widget=widget.RadioSelect)
+  ```
+]
+
+
+---
+
+# Creating Pages
+
+| Page                |  Description      |
+|---------------------|-------------------|
+| `Survey`            |  Survey questions |
+| `Results`           |  Feedback         |
+
+* Each page will have a 
+
+--
+
+  * Class in `__init__.py` 
+  
+--
+
+  * They should be added to `page_sequence` list
+  
+--
+
+  * Will have a `html` template in the same folder
+
+---
+# Creating Templates
+* We will take advantage of the default template
+
+```
+{{ block title }}
+    TITLE HERE
+{{ endblock }}
+
+{{ block content }}
+CONTENT HERE
+    {{ formfields }}   &lt;--- This generates input fields automatically
+
+{{ next_button }}      &lt;--- This creates a next button
+{{ endblock }}
+```
+
+---
+# Template Syntax
+
+* Templates use HTML codes, and oTree template items (indicated by `{{ }}`).
+
+* Indentation is not important in templates.
+
+* oTree has two default blocks:` {{ block title }}`, and `{{ block content }}`
+
+* You can reach variables of the player with `{{ player.variablename }}`
+
+* You can have conditional content by `{{ if CONDITION }}`
+
+.pull-left[
+  ```
+    {{ if CONDITION}}
+    ...
+    {{ endif }}
+  ```
+]
+-- 
+
+.pull-right[
+  ```
+    {{ if CONDITION}}
+    ...
+    {{ else }}
+    ...
+    {{ endif }}
+  ```
+]
+---
+
+
+---
+class: inverse
+
+.center[.titletext[Bonus: If time permits]]
+---
+
+
+# Form items with JavaScript
+* Let's find a slider:
+
+Mozilla Developers Network - Web Docs  
+https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/range
+
+
+
+--
+&lt;img src="images/slider.png" width="30%" style="display: block; margin: auto;" /&gt;
+--
+
+```html
+&lt;div&gt;
+  &lt;input type="range" id="volume" name="volume"
+         min="0" max="11"&gt;
+  &lt;label for="volume"&gt;Volume&lt;/label&gt;
+&lt;/div&gt;
+```
+
+---
+# Boosting up the form items with JavaScript
+
+&lt;img src="images/slider_animated.gif" width="20%" style="display: block; margin: auto;" /&gt;
+* HTML
+
+```html
+&lt;div class="slidecontainer"&gt;
+  &lt;input type="range" min="1" max="10" value="5" 
+         class="slider" id="myRange"&gt;
+  &lt;p&gt;Value:  &lt;span id="demo"&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;/div&gt;
+```
+--
+
+* JavaScript
+
+```html
+&lt;script&gt;
+var slider = document.getElementById("myRange");
+var output = document.getElementById("demo");
+output.innerHTML = slider.value;
+
+slider.oninput = function() {
+  output.innerHTML = this.value;
+}
+&lt;/script&gt;
+```
+---
+# Connecting the template with form
+
+* Using your own custom forms is a bit hacky in oTree
+* What to do?:
+  1. Create a **field** in your `Player` class
+  2. Add it in `form_fields` list in the page
+  3. Create a hidden `&lt;input&gt;` in your HTML
+  4. Let JavaScript change the value ofthe field
+
+---
+# 1. Create the form field
+* Go to `__init__.py`
+
+--
+
+* Add (let's call it this2 `selected_number` field in `Player` class.
+
+--
+
+```python
+class Player(BasePlayer):
+  #...other integer here
+  selected_number = models.IntegerField()
+```
+
+---
+# 2. Add it in form field of the page
+* Go to the `Lottery` page model in `__init__.py`
+
+--
+
+
+```python
+class Lottery(Page):
+    form_model = 'player'
+    form_fields = ['selected_number']
+```
+
+---
+# 3. Create a hidden html input
+
+https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input
+
+
+--
+Example input:
+&lt;div&gt;
+&lt;input type="text" id="name" name="name" value="This is the value"&gt;
+
+&lt;/div&gt;
+--
+
+
+```html
+&lt;input type="text" id="name" name="name" value="This is the value"&gt;
+```
+---
+# 3. Create a hidden html input
+* We should change the name and the id to the field name
+
+```html
+&lt;input type="hidden" name="selected_number" id="selected_number" /&gt;
+```
+---
+# 4. Create the Javascript code to change the field we added
+
+The original
+
+```js
+&lt;script&gt;
+var slider = document.getElementById("myRange");
+var valuetext = document.getElementById("valuetext");
+valuetext.innerHTML = slider.value;
+
+slider.oninput = function() {
+  valuetext.innerHTML = this.value;
+}
+&lt;/script&gt;
+```
+
+---
+# 4. Create the Javascript code to change the field we added
+
+Modified JS
+
+```js
+&lt;script&gt;
+var slider = document.getElementById("myRange");
+var valuetext = document.getElementById("valuetext");
+var hiddenfield = document.getElementById("selected_number") // &lt;- Add This
+
+valuetext.innerHTML = slider.value;
+
+slider.oninput = function() {
+  valuetext.innerHTML = this.value;
+  hiddenfield.value = this.value; // &lt;- And this
+}
+&lt;/script&gt;
+```
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightLines": true,
+"highlightStyle": "github",
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

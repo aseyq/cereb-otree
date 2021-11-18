@@ -1,0 +1,41 @@
+{{ block title }}
+    Thank you!
+{{ endblock }}
+
+{{ block content }}
+
+{{ if player.name }}
+    Dear {{ player.name}},
+{{ else }}
+    Dear Participant,
+{{ endif}}
+<p>
+Thank you for participating in our experiment.
+</p>
+<p>
+You are {{ player.age }} years old.
+
+    {{ if player.mood == "bad"}}
+        We are sorry that you are feeling bad today. Hope you'll get better
+    {{ endif }}
+
+    {{ if player.mood == "wonderful"}}
+        It's great that you are feeling wonderful.
+    {{ endif }}
+</p>
+
+<p>
+    {{ if player.wants_feedback }}
+        We will contact you about the results.
+    {{ endif }}
+</p>
+<div class="card m-5 bg-light">
+    <div class="card-body">
+The experiment is finished. You can close this window.
+    </div>
+</div>
+
+
+{{ endblock }}
+
+

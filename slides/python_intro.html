@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Introduction to Python</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ali Seyhun Saral" />
+    <meta name="date" content="2021-11-18" />
+    <script src="libs/header-attrs-2.8/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Introduction to Python
+### Ali Seyhun Saral
+### 18 Nov 2021
+
+---
+
+&lt;style type="text/css"&gt;
+.remark-code, .remark-inline-code {
+	font-family: 'Source Code Pro', 'Lucida Console', Monaco, monospace;
+  color: blue;
+	background-color: rgba(222,222,222,0.3);
+}
+.titletext {
+	font-size: 400%;
+  margin-top: 350px;
+  font-weight: bold;
+  display:inline-block; 
+}
+&lt;/style&gt;
+
+
+
+
+
+
+# What is Python?
+
+&lt;img src="images/pythonlogo.svg" width="25%" style="display: block; margin: auto;" /&gt;
+* `Python` is the one of the most popular general-purpose programming languages
+
+--
+
+* Applications include -but not limited to- web development, software development, data analysis, automated tasks...
+
+--
+
+* We will use `Python` as a **backend** in our `oTree` journey.  
+
+--
+
+* We will learn the fundementals, enought to kickstart `oTree`.  
+
+---
+
+# Hello World!
+
+* To print things in the console, one should use `print()` function. 
+
+--
+
+* Let's go ahead and print `Hello World`:
+
+```python
+print("Hello World!")
+```
+
+```
+## Hello World!
+```
+
+---
+
+# How to interact with Python
+* Python is essentially a **command-line software**.
+--
+
+
+1- Python Interpreter:
+
+&lt;img src="images/python_interpreter.png" width="75%" style="display: block; margin: auto;" /&gt;
+
+---
+# How to interact with Python
+2- Running a Python script from command-line:
+
+* Python scripts have the extension `.py`.
+
+
+.pull-left[
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="images/python_notepad.png" alt="my_python_file.py" width="100%" /&gt;
+&lt;p class="caption"&gt;my_python_file.py&lt;/p&gt;
+&lt;/div&gt;
+]
+
+--
+
+.pull-right[
+&lt;img src="images/python_script.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+# How to interact with Python
+3- Using a development environment
+
+* Some of them are `PyCharm`, `VSCode`, `RStudio` and so on.
+### RStudio
+.
+.pull-left[
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="images/rstudio_python.png" alt="Writing Python code in RStudio" width="80%" /&gt;
+&lt;p class="caption"&gt;Writing Python code in RStudio&lt;/p&gt;
+&lt;/div&gt;
+]
+.pull-right[
+* Use `Shift + Enter` to send the command to shell
+]
+---
+
+# How to interact with Python
+3- Using a development environment
+
+* Some of them are `PyCharm`, `VSCode`, `RStudio` and so on.
+### VSCode
+.
+.pull-left[
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="images/vscode_python.png" alt="Writing Python code in Visual Studio Code" width="100%" /&gt;
+&lt;p class="caption"&gt;Writing Python code in Visual Studio Code&lt;/p&gt;
+&lt;/div&gt;
+]
+.pull-right[
+* Use `Shift + Enter` to send the command to shell
+]
+---
+
+# How to interact with Python
+3- Using a development environment
+
+* Some of them are `PyCharm`, `VSCode`, `RStudio` and so on.
+### PyCharm
+.
+.pull-left[
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="images/pycharm_python.png" alt="Writing Python code in PyCharm" width="100%" /&gt;
+&lt;p class="caption"&gt;Writing Python code in PyCharm&lt;/p&gt;
+&lt;/div&gt;
+]
+.pull-right[
+* Use `Alt + Shift + E` to send the command to shell
+]
+---
+# How to interact with Python
+
+* Using `python` as calculator:
+--
+
+
+```python
+42 + 38
+```
+
+```
+## 80
+```
+--
+
+
+```python
+36 * 5
+```
+
+```
+## 180
+```
+---
+class: inverse
+
+.center[.titletext[Fundementals &amp; Atomic Types]]
+---
+# Arithmethic Operators in Python
+
+* `a + b` Addition
+
+* `a - b` Subtraction
+
+* `a * b` Mutiplication
+
+* `a / b` Division
+
+* `a ** b` Exponention (\\( a^b \\))
+
+---
+# Variables in Python
+* Links a value to a name
+* Case-sensitive
+* Can contain any alphanumeric characters and underscores (A-z, 0-9, _)
+* Cannot start with a number
+
+--
+
+
+```python
+height = 297
+width = 210
+
+area_mm2 = height * width
+print(area_mm2)
+```
+
+```
+## 62370
+```
+
+---
+
+# Commenting in Python
+If you have the character `#` on a line, python will not read the rest
+
+--
+
+
+```python
+# Area of an A4 paper
+height = 297 # in mm
+width = 210  # in mm
+
+area_mm2 = height * width  # in mm2
+print(area_mm2)
+```
+
+```
+## 62370
+```
+
+---
+# Types in Python
+
+```python
+# Area of an A4 paper
+height = 297 # in mm
+type(height)
+```
+
+```
+## &lt;class 'int'&gt;
+```
+
+--
+
+```python
+# Area of an A4 paper
+height = 297.0 # in mm
+type(height)
+```
+
+```
+## &lt;class 'float'&gt;
+```
+---
+# Types in Python
+We will deal with four main variable types:
+
+* Integers (`int`): `1`, `2`, `-5` ,`2910`  
+
+--
+
+* Float (`float`): `1.0`, `2.5`, `-5.3` 
+--
+  ----&gt; Decimal numbers
+
+--
+
+* String (`str`): `"hi"`, `'good morning!'`, `'Wow! 😲'` 
+--
+  ----&gt; Text
+
+--
+
+* Boolean (`    bool`): `True`, `False`
+--
+  ----&gt; Logical
+  
+---
+# Types in Python
+* Each type has its own set of rules
+
+
+```python
+3 + 5
+```
+
+--
+
+
+```
+## 8
+```
+
+--
+
+
+```python
+'3' + '5'
+```
+
+--
+
+
+```
+## '35'
+```
+
+--
+
+
+```python
+"Hello" + " World!"
+```
+
+```
+## 'Hello World!'
+```
+---
+class: inverse
+
+.center[.titletext[Lists]]
+
+---
+# Lists in Python
+* Ordered collection of values
+
+--
+
+* They can contain different types
+
+--
+
+
+```python
+a = [10,20,30]
+b = ["ali", "bob", "chiara"]
+c = ["ali", 2]
+```
+
+--
+
+* Individual items can be accessed with an index
+
+
+```python
+a[0]
+```
+
+```
+## 10
+```
+
+--
+
+
+```python
+b[1]
+```
+
+```
+## 'bob'
+```
+--
+* **Important:** Indices in Python start from 0
+---
+# Lists in Python
+* List are very flexible. They can also contain other lists.
+
+```python
+p1 = ["ali", 1987]
+p2 = ["bob", 1953]
+
+people = [p1,p2]
+print(people)
+```
+
+```
+## [['ali', 1987], ['bob', 1953]]
+```
+
+--
+
+
+```python
+print(people[0])
+```
+
+```
+## ['ali', 1987]
+```
+--
+
+```python
+print(people[0][0])
+```
+
+```
+## ali
+```
+---
+# `list` type
+* Like variables, list have their type `list` and they have their own operations.
+
+```python
+players1 = ["ali", "bob"]
+type(players1)
+```
+
+```
+## &lt;class 'list'&gt;
+```
+
+--
+
+
+```python
+players1 = ["ali", "bob"]
+players2 = ["chiara", "dana"]
+
+print(players1 + players2)
+```
+
+```
+## ['ali', 'bob', 'chiara', 'dana']
+```
+
+---
+# Subsetting lists
+* Getting one item with index (Remember to start from `0`)
+
+```python
+players = ["ali","bob","chiara","dana"]
+players[2]
+```
+
+```
+## 'chiara'
+```
+
+--
+* Start from the end (The last item is -1)
+
+```python
+players[-1]
+```
+
+```
+## 'dana'
+```
+--
+
+* Slice it
+
+```python
+# list[start_index:stop_index(not included)]
+# start: index 1(second item,included), stop: index 3(not included)
+players[1:3]
+```
+
+```
+## ['bob', 'chiara']
+```
+--
+---
+# Subsetting lists
+* Slice from the beginning and from the end
+
+```python
+players[:2]
+```
+
+```
+## ['ali', 'bob']
+```
+
+```python
+players[2:]
+```
+
+```
+## ['chiara', 'dana']
+```
+---
+
+# Be careful: Python variables are references
+
+```python
+my_list = ["ali", "bob", "chiara"]
+another_list = my_list
+```
+--
+
+
+```python
+another_list[0] = "dana"
+```
+--
+
+
+```python
+print(my_list)
+```
+
+```
+## ['dana', 'bob', 'chiara']
+```
+
+---
+# Solution: Copy the list
+
+```python
+my_list = ["ali", "bob", "chiara"]
+another_list = my_list.copy()
+```
+--
+
+
+```python
+another_list[0] = "dana"
+```
+--
+
+```python
+print(another_list)
+```
+
+```
+## ['dana', 'bob', 'chiara']
+```
+
+```python
+print(my_list)
+```
+
+```
+## ['ali', 'bob', 'chiara']
+```
+---
+class: inverse
+
+.center[.titletext[Dictionaries]]
+---
+# Dictionaries
+* Also a collection of objects like `lists`
+
+--
+
+* Unlike lists, items have keys (in other words keywords)
+
+--
+
+* Can be created with:
+  * `{key1: value1, key2: value2}`, or
+  
+  * `dict(key1=value1, key2=value2)`
+
+
+
+```python
+my_dictionary = {'ali': 1987, 'bob': 1953, 'chiara':1980}
+```
+--
+
+```
+## {'ali': 1987, 'bob': 1953, 'chiara': 1980}
+```
+
+--
+
+
+```python
+my_dictionary2 = dict(ali=1987, bob=1953, chiara=1980)
+```
+
+--
+
+```
+## {'ali': 1987, 'bob': 1953, 'chiara': 1980}
+```
+---
+# Get an item from dictionary
+
+```python
+birthyears = {"ali": 1987, "bob": 1953, "chiara":1980}
+```
+--
+
+
+```python
+birthyears["bob"]
+```
+
+```
+## 1953
+```
+
+---
+# Adding item to dictionary
+
+```python
+birthyears = {"ali": 1987, "bob": 1953, "chiara":1980}
+birthyears['dana'] = 1992
+print(birthyears)
+```
+
+```
+## {'ali': 1987, 'bob': 1953, 'chiara': 1980, 'dana': 1992}
+```
+
+---
+class: inverse
+
+.center[.titletext[Conditional Statements]]
+---
+# Logical Operators
+* We have two logical values: `True` and `False`
+
+* `and` and `or` and `not` are the logical operators
+
+* `and` means that both conditions must be true
+
+* `or` means that at least one condition must be true
+
+* `not` reverses the logical value
+
+
+```python
+a = 5
+b = 10
+
+
+print(a == 5 and b == 10)
+```
+
+```
+## True
+```
+
+```python
+print(a == 5 and b == 5)
+```
+
+```
+## False
+```
+
+```python
+print(a == 1 or b == 10)
+```
+
+```
+## True
+```
+
+```python
+print(not a == 1)
+```
+
+```
+## True
+```
+
+ Logical Operators
+
+```python
+a = 5
+b = 10
+
+print(a == 1 or b == 10)
+```
+
+```
+## True
+```
+
+```python
+print(not a == 1)
+```
+
+```
+## True
+```
+
+
+---
+# `if` statement
+
+
+```python
+my_variable = 42
+```
+---
+
+```python
+my_variable = 42
+if my_variable &lt; 50:
+    print("the variable is smaller than 50")
+```
+
+```
+## the variable is smaller than 50
+```
+
+---
+# Very important: Indentation
+
+```python
+my_variable = 42
+
+if my_variable &lt; 50:
+    print("the variable is smaller than 50")
+```
+
+```
+## the variable is smaller than 50
+```
+
+* Python doesn't have braces like `{ }` or `end` statements
+
+--
+
+* The hierarchy/ownership of the statements are determined by indents.
+
+-- 
+
+* `Four spaces` is the accepted convention but you can use `tab` or the another number of spaces as long as it is consistent.
+
+--
+* Graphical user interfaces does it mostly automatic.
+
+---
+# `else` statement
+
+
+```python
+my_variable = 42
+
+if my_variable &lt; 50:
+    print("the variable is smaller than 50")
+else:
+    print("the variable is bigger than 50")
+```
+
+```
+## the variable is smaller than 50
+```
+
+---
+
+# `elif` statement
+
+
+```python
+my_variable = 42
+
+if my_variable &lt; 40:
+    print("the variable is smaller than 40")
+elif my_variable &lt; 50:
+    print("the variable is between 40 and 50")
+else:
+    print("the variable is bigger than 50")
+```
+
+```
+## the variable is between 40 and 50
+```
+
+---
+class: inverse
+
+.center[.titletext[Functions, Methods, Classes]]
+---
+# Functions in python
+* Python has many built-in functions
+
+
+```python
+ages = [39,48,21,59]
+
+max(ages)
+```
+
+```
+## 59
+```
+
+
+```python
+my_name = "ali"
+len(my_name)
+```
+
+```
+## 3
+```
+---
+# We can build our own functions
+* Functions are defined with `def` keyword.
+
+```python
+def min_max_difference(x):
+    return(max(x) - min(x))
+    # Beware of indentation
+
+
+ages = [39,48,21,59]
+min_max_difference(ages)
+```
+
+```
+## 38
+```
+---
+
+# Methods
+* Some functions are associated to objects. They are called methods.
+* The syntax for methods is `my_object.do_something()`
+
+
+```python
+ages = [39,48,21,59]
+
+ages.index(21) # find the index of a given item
+```
+
+```
+## 2
+```
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightLines": true,
+"highlightStyle": "github",
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
