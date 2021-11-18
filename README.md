@@ -13,3 +13,7 @@
 * [oTree Conceptual Overview 🔗](https://www.saral.it/cereb-otree/slides/otree_conceptual_overview.html)
 * [oTree Individual Decisions 🔗](https://www.saral.it/cereb-otree/slides/otree_individual.html)
 
+# If you are having troubles activating the virtual environment on windows
+```
+ Set-ExecutionPolicy RemoteSigned -Scope CurrentUser 
+```
