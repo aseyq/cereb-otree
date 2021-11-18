@@ -17,3 +17,9 @@
 ```
  Set-ExecutionPolicy RemoteSigned -Scope CurrentUser 
 ```
+
+Once you are done with the course, you can change it back to, for security.
+
+```
+ Set-ExecutionPolicy Restricted -Scope CurrentUser       
+```
