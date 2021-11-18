@@ -8,6 +8,8 @@
 | TBA       | Session III - Advanced Topics                            |
 
 # Slides
-[Introduction to Python 🔗](https://www.saral.it/cereb-otree/slides/pyhton_intro.html)
-[oTree Conceptual Overview 🔗](https://www.saral.it/cereb-otree/slides/otree_conceptual_overview.html)
-[oTree Individual Decisions 🔗](https://www.saral.it/cereb-otree/slides/otree_individual.html)
+## Nov 18
+* [Introduction to Python 🔗](https://www.saral.it/cereb-otree/slides/pyhton_intro.html)
+* [oTree Conceptual Overview 🔗](https://www.saral.it/cereb-otree/slides/otree_conceptual_overview.html)
+* [oTree Individual Decisions 🔗](https://www.saral.it/cereb-otree/slides/otree_individual.html)
+
