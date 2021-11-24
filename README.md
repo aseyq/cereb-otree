@@ -3,10 +3,10 @@
 ## Schedule
 | Date      |                                                          |
 |-----------|----------------------------------------------------------|
-| Nov 18    | Session I  - Python Introduction, oTree Introduction, Individual Decision Making |
-| Nov 25    | Session II - Group Experiments                           |
-| TBA       | Session III - Advanced Topics                            |
-
+| Nov 18    | Session I  - Python Introduction, oTree Introduction,  |
+| Nov 25    | Session II - Python Cont.d., Individual Decision Making, Group Experiments I                           |
+| Dec 2       | Session III - Group Experiments II                            |
+| TBA       | Session IV - Advanced Topics
 # Slides
 ## Nov 18
 * [Introduction to Python 🔗](https://www.saral.it/cereb-otree/slides/python_intro.html)
