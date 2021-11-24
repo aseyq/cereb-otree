@@ -4,7 +4,7 @@
 | Date      |                                                          |
 |-----------|----------------------------------------------------------|
 | Nov 18    | Session I  - Python Introduction, oTree Introduction,  |
-| Nov 25    | Session II - Python Cont.d., Individual Decision Making, Group Experiments I                           |
+| Nov 25    | Session II - Individual Decision Making, Group Experiments I                           |
 | Dec 2       | Session III - Group Experiments II                            |
 | TBA       | Session IV - Advanced Topics
 # Slides
