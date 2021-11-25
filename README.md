@@ -18,14 +18,15 @@
 
 # Announcements & Notes
 * 2021-11-25 I added the code that we've written in today's session as `guessing_in_class`. The fancier version of it that I used for demonstration is called `guessing`
+* 2021-11-25 **Please note that next week (Dec 2) the class will take place at 14.00.**
 
-### If you are having troubles activating the virtual environment on windows
-```
- Set-ExecutionPolicy RemoteSigned -Scope CurrentUser 
-```
+* 2021-11-17 If you are having troubles activating the virtual environment on Windows due to permissions, you can change the policy.
+  ```
+  Set-ExecutionPolicy RemoteSigned -Scope CurrentUser 
+  ```
 
-Once you are done with the course, you can change it back to, for security.
+  Once you are done with the course, you can change it back to, for security.
 
-```
- Set-ExecutionPolicy Restricted -Scope CurrentUser       
-```
+  ```
+  Set-ExecutionPolicy Restricted -Scope CurrentUser       
+  ```
