@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Group Experiments: Homogenous Members</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ali Seyhun Saral" />
+    <meta name="date" content="2021-11-25" />
+    <script src="libs/header-attrs-2.8/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Group Experiments: Homogenous Members
+### Ali Seyhun Saral
+### 25 Nov 2021
+
+---
+
+&lt;style type="text/css"&gt;
+.remark-code, .remark-inline-code {
+  font-size: 80%;
+  color: blue;
+	background-color: rgba(222,222,222,0.3);
+}
+.titletext {
+	font-size: 400%;
+  display:inline-block; 
+}
+
+.smaller {
+	font-size: 70%;
+  display:inline-block; 
+}
+&lt;/style&gt;
+
+
+## Individual Experiments
+* We have covered individual experiments so far.
+
+--
+
+* Create `Player` fields for the variables written in the data
+
+--
+
+* Create `Pages` for each page we will see and add fields with `form_fields`
+
+--
+
+* Create/modify the templates for each page. (`PageName.html`, `AnotherPage.html`)
+
+---
+
+## Group Experiments I - Homogenous Groups
+* **Homogenous Groups** 
+
+  * All members have the same role.
+  
+  * They see the same pages.
+
+--
+
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;
+
+* Some technical aspects differ from the individual experiments:
+
+| Aspect                     | Individual Task        | Group Task                                     |
+| -----------------          | ------------------     | --------                                       |
+| **Variables / Calculations** | My own variables   | Need to reach other players' variables        |
+| **Pages**                  | My own pace | Sometimes have to wait for others|
+
+---
+
+## oTree models
+**`__init__.py`**:
+
+```python
+# MODELS
+class Constants(BaseConstants):
+    name_in_url = 'my_survey'
+    players_per_group = None
+    num_rounds = 1
+
+
+class Subsession(BaseSubsession):
+    pass
+
+
+class Group(BaseGroup):
+    pass
+
+
+class Player(BasePlayer):
+    some_individual_variable = models.IntegerField()
+```
+
+---
+# Models
+* They are managing objects which represent players/groups/the constants and handle database entries.
+--
+
+* Four built-in models:
+  * `Player`: Parameters that are unique for each individual.
+  
+  * `Group` : Parameters that are unique for the group, same for each individual in the group.
+  
+  * `Constants`: Parameters that are the same for the experiment.
+     * Beware:Constants are not written on the data!
+  
+  * `Subsession`: Parameters that are same for the "subsession". More often used to initiate some specific settings. We will see it next week.
+---
+
+## Setting group size
+
+
+```python
+class Constants(BaseConstants):
+    # ...
+    players_per_group = 3
+    # ...
+```
+---
+
+
+
+
+
+
+# Creating Fields in our models
+
+| Variable          |  Field Type      |
+|-------------------|------------------|
+| `name`            | `StringField`    |
+| `age`             | `IntegerField`   | 
+| `mood`            | `StringField`    |
+| `wants_feedback`  | `BooleanField`   |
+| `comments`        | `LongStringField`|
+
+
+---
+
+# Creating Pages
+
+| Page                |  Description      |
+|---------------------|-------------------|
+| `Survey`            |  Survey questions |
+| `Results`           |  Feedback         |
+
+* Each page will have a 
+
+--
+
+  * Class in `__init__.py` 
+  
+--
+
+  * They should be added to `page_sequence` list
+  
+--
+
+  * Will have a `html` template in the same folder
+
+---
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightLines": true,
+"highlightStyle": "github",
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

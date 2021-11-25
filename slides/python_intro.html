@@ -837,7 +837,138 @@ ages.index(21) # find the index of a given item
 ```
 ## 2
 ```
+---
+class: inverse
 
+.center[.titletext[Week 2]]
+---
+# For loop over list items
+
+* Lists are not just good for collecting items
+* Also for looping over them
+
+--
+
+
+```python
+my_list = [1,2,3,4]
+```
+
+
+```python
+for x in my_list:
+  print(x ** 2)
+```
+
+```
+## 1
+## 4
+## 9
+## 16
+```
+
+---
+
+# Creating a new list using for loop
+
+* We can generate an empty list and add items recursively.
+
+--
+
+* `list_name.append()` to add an item to a list
+
+
+--
+
+
+Example:
+
+
+```python
+my_list = [1,2,3,4]
+
+squares = []
+
+for x in my_list:
+  squares.append(x ** 2)
+  
+```
+
+--
+
+
+```python
+print(squares)
+```
+
+```
+## [1, 4, 9, 16]
+```
+
+---
+
+# List Comprehension
+* List comprehension is a shorter syntax when you create a new list based on another list.
+
+```python
+my_list = [1,2,3,4]
+```
+
+
+
+```python
+
+squares = []
+
+for x in my_list:
+  squares.append(x ** 2)
+```
+
+
+
+--
+
+we can write instead:
+
+
+```python
+squares = [x ** 2 for x in my_list]
+```
+
+
+--
+$$
+S = \\{ x^2 | \text{ for all } x \in \text{my_list} \\}
+$$
+
+---
+# List Comprehension
+
+
+```python
+my_list = [1,2,3,4]
+squares = [x ** 2 for x in my_list]
+print(squares)
+```
+
+```
+## [1, 4, 9, 16]
+```
+
+--
+
+* We can also add condition
+
+
+```python
+my_list = [1,2,3,4]
+squares = [x ** 2 for x in my_list if x &gt; 2]
+print(squares)
+```
+
+```
+## [9, 16]
+```
 
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
