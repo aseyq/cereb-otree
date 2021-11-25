@@ -7,10 +7,10 @@ Your app description
 # MODELS
 class Constants(BaseConstants):
     name_in_url = 'guessing'
-    players_per_group = 3
+    players_per_group = 5
     num_rounds = 1
     multiplier = 2/3   # 2/3 of the averages
-    bonus_points = Currency(10)
+    reward = Currency(10)
 
 
 class Subsession(BaseSubsession):
@@ -20,10 +20,10 @@ class Subsession(BaseSubsession):
 class Group(BaseGroup):
     average_guess = models.FloatField()
     target_number = models.FloatField()
-    minimum_distance = models.FloatField()
 
 class Player(BasePlayer):
-    guess = models.IntegerField(label= "Please select a number between 0 and 100", min=0, max=100)
+    guess = models.IntegerField(
+        label= "Please select a number between 0 and 100", min=0, max=100)
     distance = models.FloatField()
     is_winner = models.BooleanField()
 
@@ -40,19 +40,20 @@ def set_payoffs(group):
     group.target_number = group.average_guess * Constants.multiplier
 
     # Calculate the distances
-    distances = []
     for p in players:
         p.distance = abs(p.guess - group.target_number) # This is for my data
-        distances.append(p.distance) # For the calculation
+
+    # Get distances in group
+    distances = [p.distance for p in players]
 
     # Get the minimum distance in group
-    group.minimum_distance = min(distances)
+    minimum_distance = min(distances)
 
     for p in players:
         # if the player is the winner
-        if p.distance == group.minimum_distance:
+        if p.distance == minimum_distance:
             p.is_winner = True
-            p.payoff = Constants.bonus_points
+            p.payoff = Constants.reward
 
         # if the player is not the winner
         else:
