@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="" xml:lang="">
   <head>
-    <title>Group Experiments: Homogenous Members</title>
+    <title>Group Experiments: Homogenous Players</title>
     <meta charset="utf-8" />
     <meta name="author" content="Ali Seyhun Saral" />
     <meta name="date" content="2021-11-25" />
@@ -13,7 +13,7 @@
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
-# Group Experiments: Homogenous Members
+# Group Experiments: Homogenous Players
 ### Ali Seyhun Saral
 ### 25 Nov 2021
 
@@ -38,6 +38,7 @@ class: center, middle, inverse, title-slide
 
 
 ## Individual Experiments
+
 * We have covered individual experiments so far.
 
 --
@@ -51,6 +52,11 @@ class: center, middle, inverse, title-slide
 --
 
 * Create/modify the templates for each page. (`PageName.html`, `AnotherPage.html`)
+
+--
+
+&lt;img src="images/model_page_template.png" width="100%" style="display: block; margin: auto;" /&gt;
+
 
 ---
 
@@ -70,9 +76,32 @@ class: center, middle, inverse, title-slide
 
 | Aspect                     | Individual Task        | Group Task                                     |
 | -----------------          | ------------------     | --------                                       |
-| **Variables / Calculations** | My own variables   | Need to reach other players' variables        |
 | **Pages**                  | My own pace | Sometimes have to wait for others|
+| **Variables / Calculations** | My own variables   | Need to reach other players' variables        |
+---
+## Waiting for other players
+* oTree has a specific type of page called "WaitPage"
 
+--
+
+* Waits for all players in the group. When everybody is thereo, it moves on to the next page. 
+
+--
+
+* You need to add it to `PageSequence` list at the bottom but you don't need to create a template.
+
+--
+
+* It can also trigger some functions when all players in the group reach to the point.
+
+--
+
+* Syntax:
+
+```python
+class ResultsWaitPage(WaitPage):
+    pass
+```
 ---
 
 ## oTree models
@@ -116,6 +145,8 @@ class Player(BasePlayer):
 
 ## Setting group size
 
+* Groups structure is created and handled automatically by oTree
+
 
 ```python
 class Constants(BaseConstants):
@@ -124,47 +155,359 @@ class Constants(BaseConstants):
     # ...
 ```
 ---
-
-
-
-
-
-
-# Creating Fields in our models
-
-| Variable          |  Field Type      |
-|-------------------|------------------|
-| `name`            | `StringField`    |
-| `age`             | `IntegerField`   | 
-| `mood`            | `StringField`    |
-| `wants_feedback`  | `BooleanField`   |
-| `comments`        | `LongStringField`|
+## `Player` and `Group` classes
+* Classes are like blueprints, declaring the design
+* They are capitalized. (`Player`, `Group`)
+&lt;img src="images/classes.png" width="90%" style="display: block; margin: auto;" /&gt;
 
 
 ---
+## `Player` and `Group` instances  
+* Instances are objects created from classes
 
-# Creating Pages
+--
+
+* They are lowercase. (`player`, `group`)
+
+--
+
+* We usually deal with them in computations
+--
+
+* They have attributes(variables) 
+    * Built-in defined in the relevant model
+    * Each player object holds its own value
+--
+
+* They have functions defined in the class(methods) 
+    * Built-in or defined somewhere in `__init__.py`
+
+---
+## `Player` and `Group` instances
+&lt;img src="images/instances.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+---
+### Reaching to players in a group
+* Groups contain players
+* `some_list = group.get_players()`
+* That list contains players
+
+* `some_list[0]`, `some_list[1]`, `some_list[2]`
+* We can loop over that:
+
+
+```python
+players = group.get_players()
+
+for p in players:
+  p.do_something()
+  p.my_player_variable
+```
+
+---
+### Reaching to its group from a player
+
+```python
+player.group  # linked to group object
+
+player.group.my_group_variable
+player.group.do_something()
+```
+---
+class: inverse
+
+.center[.titletext[Let's build a game and see it in practice]]
+---
+# See the demo
+&lt;h1&gt;&lt;a href="https://xpsurvey.com/room/erfurt"&gt; xpsurvey.com/room/erfurt &lt;/a&gt;&lt;/h1&gt;
+
+---
+## Building the Guessing Game
+* Let's activate our virtual environment and go to our oTree folder
+* Alternatively we can create a new project
+
+--
+
+* Start a new app
+```
+otree startapp guessing
+```
+---
+## Let's plan first our pages
+| Page                |  Description      |
+|---------------------|-------------------|
+| `Guessing`          | Guessing screen   |
+| `Results`           | Results screen    |
+
+---
+
+## We need a WaitPage before the calculations
 
 | Page                |  Description      |
 |---------------------|-------------------|
-| `Survey`            |  Survey questions |
-| `Results`           |  Feedback         |
-
-* Each page will have a 
-
---
-
-  * Class in `__init__.py` 
-  
---
-
-  * They should be added to `page_sequence` list
-  
---
-
-  * Will have a `html` template in the same folder
+| `Guessing`          | Guessing screen   |
+| **`ResultsWaitPage`**   | Waiting page      |
+| `Results`           | Results screen    |
 
 ---
+
+# Fields
+
+| Variable          |    Model    |     Type      |       |
+|-------------------|-------------|------------------|----|
+| `guess`           | `Player`    | `IntegerField()` | Player's guess |
+--
+| `average_guess`   | `Group`     | `FloatField()`   | Average guess in the group|
+--
+| `multiplier`      | `Constants` | Constant         | Ratio of the average for the target number |
+--
+| `target_number`   | `Group`     | `FloatField()`   | Target number |
+--
+| `distance`        | `Player`    | `FloatField()`   | Difference to target value |
+--
+| `is_winner`       | `Player`    | `BooleanField()` |  Whether participant won or not |
+--
+| `reward`          | `Constants` | Constant         | Reward amount |
+--
+| `payoff`          | `Player`    | BUILT IN `Integer` |  |
+---
+
+
+## `Currency` and `payoff` built-in features in oTree
+
+* oTree has built-in currency field : `Currency`
+* Handles monetary calculations and currency symbols.
+
+--
+* Each player has already a `payoff` field
+* Payoff will be converted to real money at the end.
+
+
+--
+
+* `settings.py` controls conversion and currency.
+
+---
+
+## Calculations in `oTree`
+
+* You can write functions in `__init__.py`
+
+--
+* Functions get `player` or `group` as input
+
+
+```python
+def set_payoffs(group):
+    # do something
+```
+--
+
+* These functions don't run automatically. It should be triggered.
+
+---
+
+## Triggering a function in a `WaitPage` 
+* `WaitPage` have a built in variable `after_all_players_arrive`.
+
+--
+
+* It takes the name of the function to be executed.
+
+--
+
+* Executes it when all players arrive in the WaitPage, before moving to the next page
+
+--
+
+```python
+class ResultsWaitPage(WaitPage):
+    after_all_players_arrive = 'set_payoffs'
+```
+
+---
+## Template features
+
+* Templates have access to `player`, `group` and `Constants` variables.
+
+   ```
+       Your guess was {{ player.guess }}.
+       Your group decided on {{ group.decision }}
+       The reward was {{ Constants.reward }}
+       You will get {{session.config.participation_fee}} for participating.
+   ```
+   
+--
+   
+* You can show less digits of decimals with `| to0`, `|to1`, `|to2`.
+
+
+
+---
+
+## Template features
+
+* If you want to show a variable that doesn't exist in your models, you can use a page function called `vars_for_template`
+
+--
+
+
+```python
+class Results(Page):
+    
+    def vars_for_template(player):
+
+        return dict(
+            variable_to_show=432,
+        )
+```
+  
+* Then you can reach it in the template by:
+
+```
+{{ variable_to_show }}
+
+```
+---
+# Final Code
+
+* Models (`__init__.py`)
+
+
+```python
+# MODELS
+class Constants(BaseConstants):
+    name_in_url = 'guessing'
+    players_per_group = 3
+    num_rounds = 1
+    multiplier = 2/3   # 2/3 of the averages
+    reward = Currency(10)
+
+
+class Subsession(BaseSubsession):
+    pass
+
+
+class Group(BaseGroup):
+    average_guess = models.FloatField()
+    target_number = models.FloatField()
+
+class Player(BasePlayer):
+    guess = models.IntegerFiel(label= "Pick a number", min=0, max=100)
+    distance = models.FloatField()
+    is_winner = models.BooleanField(initial=False)
+```
+---
+# Final Code
+
+* Functions (`__init__.py`)
+
+```python
+# FUNCTIONS
+def set_payoffs(group):
+    players = group.get_players()
+    guesses = [p.guess for p in players]
+    
+    group.average_guess = sum(guesses) / Constants.players_per_group
+    group.target_number = group.average_guess * Constants.multiplier
+    
+    for p in players:
+        p.distance = abs(p.guess - group.target_number) # This is for my data
+
+    distances = [p.distance for p in players]
+    minimum_distance = min(distances)
+
+    for p in players:
+        # if the player is the winner
+        if p.distance == minimum_distance:
+            p.is_winner = True
+            p.payoff = Constants.reward
+```
+
+---
+# Final Code
+
+* Pages (`__init__.py`)
+
+
+```python
+# PAGES
+class Welcome(Page):
+    pass
+
+class Guessing(Page):
+    form_model = "player"
+    form_fields = ['guess']
+
+class ResultsWaitPage(WaitPage):
+    after_all_players_arrive = 'set_payoffs'
+
+class Results(Page):
+    @staticmethod
+    def vars_for_template(player):
+        guesses = [p.guess for p in player.group.get_players()]
+
+        return dict(
+            guesses=guesses,
+        )
+
+
+page_sequence = [Welcome, Guessing, ResultsWaitPage, Results]
+```
+
+# Final Code
+* `Guessing.html`
+
+```
+{{ block title }}
+Guess the 2/3 of the Average
+{{ endblock }}
+{{ block content }}
+
+{{ formfields }}
+
+{{ next_button }}
+
+{{ endblock }}
+
+
+```
+---
+
+# Final Code
+* `Results.html`
+
+```
+{{ block title }}
+Results
+{{ endblock }}
+
+{{ block content }}
+&lt;p&gt;
+    Your guess was &lt;strong&gt;{{ player.guess }}&lt;/strong&gt;.
+&lt;/p&gt;
+&lt;p&gt;
+    The all guesses in the group are the following: &lt;strong&gt;{{ guesses }}&lt;/strong&gt;.
+&lt;/p&gt;
+&lt;p&gt;
+    The average guess was &lt;strong&gt;{{ group.average_guess | to2 }}&lt;/strong&gt;. The 2/3 of the average guess was &lt;strong&gt;{{ group.target_number | to2 }}&lt;/strong&gt;.
+&lt;/p&gt;
+
+        {{ if player.is_winner }}
+        &lt;h4 style="color:green;"&gt;  You won! &lt;/h4&gt;
+        {{ else }}
+        &lt;h4 style="color:red;"&gt;  You didn't win! :( &lt;/h4&gt;
+        {{ endif }}
+
+        &lt;p&gt;
+            Your won {{ player.payoff }} from this round.
+        &lt;/p&gt;
+        &lt;h5&gt;Your final earning is {{ participant.payoff_plus_participation_fee }}. &lt;/h5&gt;
+
+&lt;br&gt;&lt;br&gt;
+&lt;p&gt;&lt;strong&gt; Thank you very much for participating in our experiment. Now you can close this browser.&lt;/strong&gt;&lt;/p&gt;
+{{ endblock }}
+```
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
