@@ -1,0 +1,35 @@
+{{ block title }}
+Results
+{{ endblock }}
+
+{{ block content }}
+<p>
+    Your guess was <strong>{{ player.guess }}</strong>.
+</p>
+<p>
+    The all guesses in the group are the following: <strong>{{ guesses }}</strong>.
+</p>
+<p>
+    The average guess was <strong>{{ group.average_guess | to2 }}</strong>. The 2/3 of the average guess was <strong>{{ group.target_number | to2 }}</strong>.
+</p>
+<div class="card bg-light">
+    <div class="card-body">
+
+        {{ if player.is_winner }}
+        <h4 style="color:green;">  You won! </h4>
+        {{ else }}
+        <h4 style="color:red;">  You didn't win! :( </h4>
+        {{ endif }}
+
+        <p>
+            Your won {{ player.payoff }} from this round.
+        </p>
+        <h5>Your final earning is {{ participant.payoff_plus_participation_fee }}. </h5>
+    </div>
+</div>
+
+<br><br>
+<p><strong> Thank you very much for participating in our experiment. Now you can close this browser.</strong></p>
+{{ endblock }}
+
+
