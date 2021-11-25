@@ -1,0 +1,20 @@
+{{ block title }}
+    End of the experiment
+{{ endblock }}
+
+{{ block content }}
+<p> Your choice was: {{ player.guess }}. </p>
+<p>    The average in your group was {{ group.average_guess | to1 }} </p>
+
+  {{ if player.is_winner }}
+        <h4 style="color:green;">  You won! </h4>
+        {{ else }}
+        <h4 style="color:red;">  You didn't win! :( </h4>
+        {{ endif }}
+
+From this part, you earned {{ player.payoff }}
+{{ my_value}}
+    {{ next_button }}
+{{ endblock }}
+
+
