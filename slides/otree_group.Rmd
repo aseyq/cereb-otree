@@ -225,6 +225,25 @@ class: inverse
 <h1><a href="https://xpsurvey.com/room/erfurt"> xpsurvey.com/room/erfurt </a></h1>
 
 ---
+## The Guessing Game
+.pull-left[
+* Groups of 5 (we can take 3 for convenience)
+
+* Participants pick a number between 0 to 10.
+
+* Those who picked the closest number to **2/3 of the average** wins 10 EUR.
+  
+* Show-up fee: 5 EUR.
+]
+
+.pull-right[
+```{r, echo=FALSE, out.width='100%', fig.align='center'}
+knitr::include_graphics('images/guessing_result.png')
+```
+
+
+]
+---
 ## Building the Guessing Game
 * Let's activate our virtual environment and go to our oTree folder
 * Alternatively we can create a new project
