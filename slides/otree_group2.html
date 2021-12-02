@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Group Experiments 2: Heterogenous Players</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ali Seyhun Saral" />
+    <meta name="date" content="2021-12-02" />
+    <script src="libs/header-attrs-2.11/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Group Experiments 2: Heterogenous Players
+### Ali Seyhun Saral
+### 2 December 2021
+
+---
+
+&lt;style type="text/css"&gt;
+.remark-code, .remark-inline-code {
+  font-size: 80%;
+  color: blue;
+	background-color: rgba(222,222,222,0.3);
+}
+.titletext {
+	font-size: 200%;
+  display:inline-block; 
+}
+
+.smaller {
+	font-size: 70%;
+  display:inline-block; 
+}
+&lt;/style&gt;
+
+
+## Recap of previous lecture
+
+* We have covered group experiments where the individuals had the same role.
+
+--
+
+* We created `Player` fields for the individual level data and `Group` fields 
+
+--
+
+* And as usual we created `Page` classes for each page we will see and add fields with `form_fields`. We created a template for each one.
+
+--
+
+* We created a `group` function to set payoffs and triggered it at the waiting page by setting `after_all_players_arrive` variable to the name of our function.
+
+--
+
+* Now we will see how the design changes when we have different roles.
+
+--
+
+&lt;img src="images/model_page_template.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+---
+## Waiting for other players and trigering a function
+
+
+```python
+class ResultsWaitPage(WaitPage):
+    after_all_players_arrive = "my_group_function"
+```
+---
+
+## Group Experiments II - Heterogenous Groups
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;
+
+* Some technical aspects differ from the individual experiments:
+
+| Aspect                     | Homogeneous Groups        | Heterogeneous Groups                                     |
+| -----------------          | ------------------     | --------                                             |
+| **Pages**                  | Everybody sees every page |  Some pages might be shown to specific groups only|
+--
+
+| **Variables / Calculations** | Calculations are the same for everybody   | Role specific calculations might be necessary |
+---
+## Heterogenous Groups
+In this section, we will focus on the case when the players have different roles. Games with heterogeneous agents have some unique aspects we need to handle:
+
+  * We should be able to identify each player in group in order to give them role-specific tasks object
+
+  * We should be able to show each player different screens
+
+---
+## Identifying Participants in a Group
+
+
+* oTree already have a structure to deal with individuals roles in a group.
+
+--
+
+* `player.id_in_group`: Each player gets an integer from 1 to n as their id
+  
+--
+
+&lt;img src="images/id_in_group.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+---
+## Default behavior `id_in_group` in oTree
+
+&lt;img src="images/mtc_grouping_with_ids.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+* `id_in_group` stays the same for an app for a round.
+--
+
+* `id_in_group` stays the same as for multiple rounds by default.
+
+--
+* When participants use the same link (as opposed to the individual links), they will be grouped one by one.
+
+---
+## Roles can be defined based on `id_in_group`
+&lt;img src="images/mtc_grouping_with_ids_roles.png" width="70%" style="display: block; margin: auto;" /&gt;
+---
+
+###  Calling players by id
+* In the guessing game, our players were identical. So we could loop over players like
+
+  
+  ```python
+  # Gets all the players and puts them in a list
+  players = group.get_players()
+  
+  for p in players:
+    do_something(p)
+    p.some_attribute = some_number
+    #...
+  ```
+--
+* We could also do:
+
+  
+  ```python
+  players = group.get_players()
+  
+  first_player = players[0]
+  second_player = players[1]
+  third_player = players[2]
+  
+  do_something(first.player)
+  first_player.some_attribute = some_number 
+  
+  do_something(second_player)
+  # ...
+  ```
+---
+### Calling players by id: `group.get_player_by_id()`
+
+* `get_player_by_id()` is a group method
+
+* Takes a number from 1 to n to get the player object of the group member 
+
+  
+  ```python
+  trustor = group.get_player_by_id(1)
+  trustee = group.get_player_by_id(2)
+  
+  trustor.payoff = endowment - sent_amount + returned amount
+  ```
+---
+## Displaying pages conditionally 
+* Built in method to be defined under a page (can be outside as well)
+
+* If this method returns `True` for current player, the page is displayed. Otherwise, it will not.
+
+* If there are any calculations triggered by page, they will be skipped as well.
+
+    * For a specific player:
+      
+      ```python
+      class PageForTrustor(Page):
+      
+          def is_displayed(player):
+              return player.id_in_group == 1
+      ```
+--
+    * In a specific round
+      
+      ```python
+      class PageForTrustor(Page):
+      
+          def is_displayed(player):
+              return player.round_number == 1
+      ```
+      
+
+
+&lt;br&gt;
+&lt;br&gt;
+[Documentation Link](https://otree.readthedocs.io/en/latest/pages.html?highlight=skip%20app#is-displayed)
+---
+class: inverse
+
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+Let's put those into practice 
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.center[.titletext[Building a trust game]]
+---
+# The Trust Game
+
+&lt;img src="images/trust_game_str.png" width="80%" style="display: block; margin: auto;" /&gt;
+--
+.pull-left[
+&lt;img src="images/trust_ss1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+--
+.pull-right[
+&lt;img src="images/trust_ss2.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+
+
+---
+# See the demo
+&lt;h1&gt;&lt;a href="https://xpsurvey.com/room/erfurt"&gt; xpsurvey.com/room/erfurt &lt;/a&gt;&lt;/h1&gt;
+
+---
+## Planning Pages
+| Page         | Description                   | Shown |
+| -------------| ----------------------------- |-------|
+| Send         | Send amount from P1 to P2     | P1    |
+--
+
+| Return       | Return amount from P2 to P1   | P2    |
+
+--
+| Results      | Show Results                  | Both  |
+---
+## Planning Pages
+| Page         | Description                   | Shown |
+| -------------| ----------------------------- |-------|
+| Send         | Send amount from P1 to P2     | P1    |
+| WaitForP1    |                               |       |
+| Return       | Return amount from P2 to P1   | P2    |
+| WaitForP2    |                               |       |
+| Results      | Show Results                  | Both  |
+---
+
+## Game Parameters
+| Parameter             | Description                           | Scope     | Field/Type       |
+| -------------         | ----------------------------------    | --------  | ----------       |
+| players_per_group     | (built-in) Number of players in group | Constants |                  |
+| initial_endowment             | Initial endowment of P1               | Constants |`Currency()`   |
+| multiplier      | The multiplier of P1's transfer to P2 | Constants |                  |
+| sent_amount            | The amount sent by P1 to P2           | Group     | **CurrencyField** |
+| returned_amount        | The amount sent back by P2 to P1      | Group     | **CurrencyField** |
+
+---
+## Using Experimental Currencies
+* `settings.py` controls the parameters for currency types
+
+```python
+# e.g. EUR, GBP, CNY, JPY
+REAL_WORLD_CURRENCY_CODE = 'USD'
+USE_POINTS = True
+```
+--
+* Let's modify these
+
+```python
+REAL_WORLD_CURRENCY_CODE = 'EUR'
+USE_POINTS = True
+POINTS_CUSTOM_NAME = 'ECU'
+```
+---
+# Then let's create our app `trust`
+* Create the app
+```
+otree startapp trust
+```
+--
+
+* Add the app to `settings.py`
+
+
+```python
+SESSION_CONFIGS = [
+     dict(
+         name='trust',
+         app_sequence=['trust'],
+         num_demo_participants=2,
+     ),
+]
+```
+---
+
+## Game Parameters
+| Parameter             | Description                           | Scope     | Field/Type       |
+| -------------         | ----------------------------------    | --------  | ----------       |
+| players_per_group     | (built-in) Number of players in group | Constants |                  |
+| initial_endowment             | Initial endowment of P1               | Constants |`Currency()`   |
+| multiplier      | The multiplier of P1's transfer to P2 | Constants |                  |
+| sent_amount            | The amount sent by P1 to P2           | Group     | **CurrencyField** |
+| returned_amount        | The amount sent back by P2 to P1      | Group     | **CurrencyField** |
+
+---
+# Pages
+| Page         | Description                   | Shown |
+| -------------| ----------------------------- |-------|
+| Send         | Send amount from P1 to P2     | P1    |
+| WaitForP1    |                               |       |
+| Return       | Return amount from P2 to P1   | P2    |
+| WaitForP2    |                               |       |
+| Results      | Show Results                  | Both  |
+---
+
+---
+# Adding Conditions to Pages
+
+
+```python
+  class Send(Page):
+    form_model = "group"
+    form_fields = ['sent_amount']
+
+    @staticmethod
+    def is_displayed(player):
+        return player.id_in_group == 1
+
+
+class Return(Page):
+    form_model = "group"
+    form_fields = ['returned_amount']
+
+    @staticmethod
+    def is_displayed(player):
+        return player.id_in_group == 2
+```
+---
+### Why add staticmethod?
+* `@staticmethod` is a stylistic definition. It tells the function inside a class that it is not a function of class (but `player`,`group` and so on.)
+
+--
+
+* The code would work just fine without `@staticmethod` but the editors will handle the file better (autocomplete etc.)
+
+---
+## Displaying the maximum amount that can be sent
+
+* `vars_for_template` is used to access variables/objects that are not a part of `player`, `group` `session` and `participant` in a template.
+
+
+--
+
+* Defined as a method under a page. (can be also defined standalone)
+
+--
+
+* We can calculate the amount and send it to the relevant page
+
+--
+
+
+```python
+class Return(Page):
+  # other stuff
+  def vars_for_template(player: Player):
+    returnable_amount = player.group.sent_amount * Constants.multiplier
+    return dict(returnable_amount = returnable_amount)
+```
+
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+
+[Documentation Link](https://otree.readthedocs.io/en/latest/pages.html?highlight=vars_for_template#vars-for-template)
+
+---
+
+
+## Setting maximum and minimum dynamically
+* Create a function with the name **fieldname**_max.
+
+* This function should return the amount for the maximum 
+
+--
+
+
+```python
+def returned_amount_max(group):
+    return group.sent_amount * Constants.multiplier
+```
+
+--
+* Also `fieldname_min` and `fieldname_errormessage`
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+
+[Documentation Link](https://otree.readthedocs.io/en/latest/forms.html?highlight=_max#field-name-max)
+
+---
+## Setting Payoffs
+
+* Now we can define our `set_payoff` function.
+
+* This function is standalone (not under a class) and it always takes `group` as an argument.
+
+
+```python
+def set_payoffs(group):
+    p1 = group.get_player_by_id(1)
+    p2 = group.get_player_by_id(2)
+
+    p1.payoff = Constants.initial_endowment - group.sent_amount + group.returned_amount
+    p2.payoff = group.sent_amount * Constants.multiplier - group.returned_amount
+```
+---
+## Triggering `set_payoffs`
+
+* Then we need to create the the relevant `WaitPage` to trigger it:
+
+
+```python
+class WaitForB(WaitPage):
+    after_all_players_arrive = set_payoffs
+```
+
+---
+
+# Preparing Results Page
+* We can have a single page with if conditions
+
+```
+    {{ if player.id_in_group == 1 }}
+      &lt;ul&gt;
+            &lt;li&gt; You had {{ Constants.initial_endowment }} &lt;/li&gt;
+            &lt;li&gt; You sent Player B {{ group.sent_amount }}.&lt;/li&gt;
+            &lt;li&gt; Player B returned {{ group.returned_amount }}. &lt;/li&gt;
+        &lt;/ul&gt;
+        &lt;/p&gt;
+    {{ else }}
+            &lt;p&gt;
+            &lt;ul&gt;
+                &lt;li&gt;Player A sent you {{ group.sent_amount }}. &lt;/li&gt;
+                &lt;li&gt;You returned {{ group.returned_amount }}. &lt;/li&gt;
+
+            &lt;/ul&gt;
+            &lt;/p&gt;
+    {{ endif }}
+```
+---
+
+## Payoff Relevant Variables in a Template
+* In oTree, there is a separate `player` object for each participant in each app or in each round.
+--
+
+* oTree represents a participant with `participant` object within all rounds and apps. 
+
+--
+
+* It tracks payoff relevant information for each round/each app and update `participant` variables
+
+--
+
+* Some important variables:
+  * `participant.payoff`: Total payoff in each app in the currency/points
+  * `participant.payoff_in_real_world_currency`: Total payoff after the payoff is converted
+  * `participant.payoff_plus_participation_fee`: Payoff + participation fee
+  
+--
+* You can access the participation fee by `session.config.participation_fee`
+
+---
+## Payoff relevant information in Results
+```
+    &lt;p&gt;
+        Your payoff from this stage is {{ participant.payoff }}. 
+        It is converted to {{ participant.payoff_in_real_world_currency }}.
+        You earned {{ session.config.participation_fee }} a fixed 
+        show-up fee for participating in this experiment.
+    &lt;/p&gt;
+
+    &lt;h5&gt;In total, your final earning 
+    is {{ participant.payoff_plus_participation_fee }}. &lt;/h5&gt;
+
+```
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightLines": true,
+"highlightStyle": "github",
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
