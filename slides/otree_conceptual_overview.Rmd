@@ -169,7 +169,7 @@ ot
 
 6\. Create an oTree project
   ```{bash, eval=FALSE}
-  otree devserver
+  otree startproject oTree
   ```
   
 
