@@ -1,0 +1,27 @@
+{{ block title }}
+Instructions
+{{ endblock }}
+{{ block content }}
+<div class="card bg-light">
+  <div class="card-body">
+    <h5 class="card-title">Instructions</h5>
+    <p> You are matched with another participant. <p>
+
+        {{ if player.id_in_group == 1 }}
+        <p>
+    <h2> You are assigned as <strong>Player A</strong></h2>
+        </p>
+    {{ else }}
+        <p>
+    <h2> You are assigned as <strong>Player B</strong></h2>
+        </p>
+    {{ endif }}
+
+
+    <p><strong>Click Next to continue</strong></p>
+    {{ next_button }}
+  </div>
+</div>
+
+
+{{ endblock }}

@@ -1,0 +1,28 @@
+{{ block title }}
+Welcome to the experiment
+{{ endblock }}
+{{ block content }}
+<div class="card bg-light">
+  <div class="card-body">
+    <h5 class="card-title">Instructions</h5>
+    <p> This experiment is conducted by <strong>Worthington University.</strong> <p>
+    </p>
+    <p> During the experiment, we will use a hypothetical currency called <strong> {{ units }}</strong>.</p>
+    <p>
+      At the end of the experiment, your {{ units }} will be converted to {{ rwc_symbol }} . <br>
+      <br>
+      <strong> For each {{ units }}, you will receive {{ rate }} {{ rwc_symbol }} </strong>
+    </p>
+
+    <p>
+      You will earn a show up fee of <strong>{{ session.config.participation_fee }}</strong> for your participation.
+    </p>
+
+    <p><strong>If you agree with the rules above, please click the button below. Otherwise you can close this page.</strong></p>
+    <button class="otree-btn-next btn btn-success">I read and I understood</button>
+
+  </div>
+</div>
+
+
+{{ endblock }}

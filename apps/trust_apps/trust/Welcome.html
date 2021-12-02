@@ -1,0 +1,27 @@
+{{ block title }}
+Welcome to the experiment
+{{ endblock }}
+{{ block content }}
+<div class="card bg-light">
+  <div class="card-body">
+    <h5 class="card-title">Instructions</h5>
+    <p> You will be assigned in <strong> groups of {{ Constants.players_per_group }}. </strong> <p>
+    </p>
+    <p> During the experiment, we will use a hypotethical currency called <strong> {{ units }}</strong>.</p>
+    <p>
+      At the end of the experiment, your {{ units }} will be converted to {{ rwc_symbol }} . <br>
+      <br>
+      <strong> For each {{ units }}, you will receive {{ rate }} {{ rwc_symbol }} </strong>
+    </p>
+
+    <p>
+      You will earn a show up fee of <strong>{{ session.config.participation_fee }}</strong> for your participation.
+    </p>
+
+    <p><strong>Click Next to continue</strong></p>
+    {{ next_button }}
+  </div>
+</div>
+
+
+{{ endblock }}

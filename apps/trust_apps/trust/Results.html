@@ -1,0 +1,33 @@
+{{ block title }}
+Results
+{{ endblock }}
+
+{{ block content }}
+    {{ if player.id_in_group == 1 }}
+        <p>
+        <ul>
+            <li> You had {{ Constants.initial_endowment }} </li>
+            <li> You sent Player B {{ group.sent_amount }}.</li>
+            <li> Player B returned {{ group.returned_amount }}. </li>
+        </ul>
+        </p>
+    {{ else }}
+            <p>
+            <ul>
+                <li>Player A sent you {{ group.sent_amount }}. </li>
+                <li>You returned {{ group.returned_amount }}. </li>
+
+            </ul>
+            </p>
+    {{ endif }}
+
+    <p>
+        Your payoff from this stage is {{ participant.payoff }}. It is converted to {{ participant.payoff_in_real_world_currency }}.
+        You earned {{ session.config.participation_fee }} a fixed show-up fee for participating in this experiment.
+    </p>
+
+    <h5>In total, your final earning is {{ participant.payoff_plus_participation_fee }}. </h5>
+
+    {{ endblock }}
+
+

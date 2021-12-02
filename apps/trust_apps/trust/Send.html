@@ -1,0 +1,10 @@
+{{ block title }}
+    Player A
+{{ endblock }}
+{{ block content }}
+<p> You are Player A</p>
+<p> <strong>You have {{ Constants.initial_endowment }}</strong>. Each ECU you send to the other player will be multiplied by {{ Constants.multiplier }}. </p>
+    {{ formfields }}
+    {{ next_button }}
+
+{{ endblock }}

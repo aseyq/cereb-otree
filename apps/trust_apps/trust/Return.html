@@ -1,0 +1,9 @@
+{{ block title }}
+    Player B
+{{ endblock }}
+{{ block content }}
+    <p> Player A sent you {{ group.sent_amount }}. That gives you {{ returnable_amount }} that you can send back in total. </p>
+    {{ formfields }}
+    {{ next_button }}
+
+{{ endblock }}
