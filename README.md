@@ -13,7 +13,9 @@
 * [oTree Conceptual Overview 🔗](https://www.saral.it/cereb-otree/slides/otree_conceptual_overview.html)
 * [oTree Individual Decisions 🔗](https://www.saral.it/cereb-otree/slides/otree_individual.html)
 ## Nov 25
-* [Groups 1 - Homogenous Groups 🔗](https://www.saral.it/cereb-otree/slides/otree_group.html)
+* [Groups 1 - Homogeneous Groups 🔗](https://www.saral.it/cereb-otree/slides/otree_group.html)
+## Dec 2
+* [Groups 2 - Heterogeneous Groups 🔗](https://www.saral.it/cereb-otree/slides/otree_group2.html)
 
 
 # Announcements & Notes
