@@ -1,0 +1,30 @@
+{{ block title }}
+    Results
+{{ endblock }}
+
+{{ block content }}
+Thanks for your participation.
+
+{{ if player.id_in_group == 1}}
+<ul>
+    <li>You had {{ Constants.initial_endowment}}. You've sent {{ group.sent_amount }}.</li>
+    <li>Player 2 has sent {{ group.returned_amount }} to you.</li>
+</ul>
+{{ endif }}
+
+{{ if player.id_in_group == 2}}
+<ul>
+    <li>Player 2 sent you {{ group.sent_amount }}.</li>
+    <li>You returned {{ group.returned_amount }} to you.</li>
+</ul>
+{{ endif }}
+
+You earned {{ participant.payoff }}
+This makes {{ participant.payoff_in_real_world_currency }}
+In total, you got {{ participant.payoff_plus_participation_fee }}
+
+
+    {{ next_button }}
+{{ endblock }}
+
+
