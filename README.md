@@ -22,7 +22,7 @@
 ## 2021-12-04 
 I've added the trust game app we have written during the class as "**trust_in_class**". The trust game I used for demonstation is in "**trust_apps**" folder. This contains three apps: I will talk about this choice next week. 
 
-* For the final session, I will talk about matching in oTree and then some advanced topics like using JavaScript, Using Bots, Online Experiment arrangements and so on. If you plan to run an experiment and would like to know about some aspects of it, feel free to send me an e-mail so I can add related material.
+For the final session, I will talk about matching in oTree and then some advanced topics like using JavaScript, Using Bots, Online Experiment arrangements and so on. If you plan to run an experiment and would like to know about some aspects of it, feel free to send me an e-mail so I can add related material.
 
 ## 2021-11-25 
 I've added the code that we've written in today's session as `guessing_in_class`. The fancier version of it that I used for demonstration is called `guessing`
