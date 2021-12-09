@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Advanced Topics: Apps, Matching, Bots, JavaScript</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ali Seyhun Saral" />
+    <script src="libs/header-attrs-2.11/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Advanced Topics: Apps, Matching, Bots, JavaScript
+### Ali Seyhun Saral
+### 8 Dec 2021
+
+---
+
+&lt;style type="text/css"&gt;
+.remark-code, .remark-inline-code {
+  font-size: 80%;
+  color: blue;
+	background-color: rgba(222,222,222,0.3);
+}
+.titletext {
+	font-size: 400%;
+  display:inline-block; 
+}
+
+.smaller {
+	font-size: 70%;
+  display:inline-block; 
+}
+&lt;/style&gt;
+
+
+## Multiple Rounds
+* Built-in variable for multiple rounds.
+
+
+```python
+class Constants(BaseConstants):
+    name_in_url = 'trust'
+    players_per_group = 2
+    num_rounds = 1    # &lt;----
+```
+--
+* Each `player`, `group` and `subsession` will have the attribute `round_number`.
+    * Example: `player.round_number`
+
+---
+## Variables when there are multiple rounds
+&lt;img src="images/rounds.png" width="70%" style="display: block; margin: auto;" /&gt;
+* For each round, there will be a separate `player` object for each participant and a `group` object for each group.
+
+--
+* For each participant, `participant` object connects players.
+--
+* `player.variable_name` written in the previous rounds will not be accessible
+
+---
+## Accessing variables when there are multiple rounds
+
+* `player.in_round(n)` brings the player object of a participant at a given round
+
+--
+
+```python
+# Get the player obj in the prev. round
+previous_player = player.in_round(player.round_number - 1) 
+
+previous_decision = previous_player.decision
+```
+
+---
+## For our trust game
+
+```python
+    def vars_for_template(player):
+           if player.round_number &gt; 1:
+            previous_player = player.in_round(player.round_number - 1)
+            previous_sent_amount = previous_player.group.sent_amount
+            previous_returned_amount = previous_player.group.returned_amount
+            return dict(prev_sent = previous_sent_amount,
+                        prev_return = previous_returned_amount)
+```
+---
+## Other methods to gather objects from the previous round
+
+* `player.in_previous_rounds()`: Returns a list of all player objects of the same participant from the previous rounds
+
+* `player.in_all_rounds()`: Returns a list of all player objects of the same participant from the previous round + the current round
+
+* `player.in_rounds(m, n)` Returns a list of players of the same participants from rounds m to n.
+
+[link to documentation](https://otree.readthedocs.io/en/latest/rounds.html?highlight=round#passing-data-between-rounds-or-apps)
+
+---
+
+
+---
+## Matching and Subsession Class
+* In oTree, groups are created when the session is created
+--
+* This is handled by `subsession` class.
+
+--
+
+* A built-in `subsession` function, `creating_session` can be created to monitor/modify this process.
+
+--
+* `subsession.get_group_matrix()` shows the matching as a list of list.
+    * Each group is a list
+    * Order represents id_in_group
+    
+-- 
+
+```python
+# Add this code to anywhere in your __init__.py file. 
+# (ideally under #FUNCTIONS section you've created)
+
+def creating_session(subsession):
+    print(subsession.get_group_matrix())
+
+# OUTPUT
+# [[1, 2], [3, 4], [5, 6]]
+# [[1, 2], [3, 4], [5, 6]]
+# [[1, 2], [3, 4], [5, 6]]
+```
+
+
+---
+## Matching in multiple round games
+.pull-left[
+* The default behavior: Roles (`id_in_group`) are fixed, groups are fixed.
+]
+
+.pull-right[
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="images/mtc_same_group_same_role.png" alt="Default Matching in oTree" width="60%" /&gt;
+&lt;p class="caption"&gt;Default Matching in oTree&lt;/p&gt;
+&lt;/div&gt;
+]
+---
+## Random Group, Random Role
+.pull-left[
+* To shuffle groups and `id_in_group` in each round, you can use: 
+
+
+```python
+def creating_session(subsession):
+    subsession.group_randomly()
+```
+]
+
+.pull-right[
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="images/mtc_random_group_random_role.png" alt="Random Group Random Role" width="60%" /&gt;
+&lt;p class="caption"&gt;Random Group Random Role&lt;/p&gt;
+&lt;/div&gt;
+]
+---
+## Random Group, Random Role
+
+* You can also condition the shuffling for specific rounds
+
+```python
+# Shuffle only in round 1 and 3, keep the grouping otherwise
+def creating_session(subsession):
+    if subsession.round_number in [1,3]:
+        subsession.group_randomly()
+    else:
+        subsession.group_like_round(subsession.round_number -1)
+    
+## GROUPS    
+# [[5, 2], [3, 6], [4, 1]]
+# [[5, 2], [3, 6], [4, 1]]
+# [[2, 4], [6, 5], [1, 3]]
+# [[2, 4], [6, 5], [1, 3]]
+```
+---
+## Random Group, Same Role
+.pull-left[
+* If `group_randomly` takes the argument, `fixed_id_in_group=True`, then it would shuffle in a way that `id_in_group` will be same for each player.
+
+
+```python
+def creating_session(subsession):
+    subsession.group_randomly(fixed_id_in_group=True)
+    
+# OUTPUT
+# [[3, 4], [5, 2], [1, 6]]
+# [[3, 4], [1, 6], [5, 2]]
+# [[1, 4], [3, 6], [5, 2]]
+# [[5, 2], [3, 4], [1, 6]]
+```
+]
+
+.pull-right[
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="images/mtc_random_group_same_role.png" alt="Random Group Same Role" width="60%" /&gt;
+&lt;p class="caption"&gt;Random Group Same Role&lt;/p&gt;
+&lt;/div&gt;
+]
+---
+## Using a custom matching structure
+```
+def creating_session(subsession):
+
+    matching = [[1,3], [2,4]]
+    subsession.set_group_matrix(matching)
+```
+---
+## Grouping by arrival time
+* In online experiments, you often need `group_by_arrival_time`
+
+--
+
+  
+  ```python
+  class GroupingWait(WaitPage):
+    group_by_arrival_time = True
+    
+  page_sequence = [GroupingWait, ...]
+  ```
+
+* It works only if the page is a `WaitPage` and it is the first page of the app.
+---
+## Multiple Apps
+
+* One can add multiple apps. They will be shown in order.
+
+
+```python
+SESSION_CONFIGS = [
+    dict(
+        name='trust',
+        app_sequence=['consent', 'trust', 'timeout'],
+        num_demo_participants=2,
+        real_world_currency_per_point= 0.25,
+        participation_fee = 3,
+    ),
+]
+```
+--
+
+* In oTree You can stop at whatever page/app you'd like.
+---
+
+## oTree Structure with Multiple Apps
+&lt;img src="images/participant.png" width="70%" style="display: block; margin: auto;" /&gt;
+## Carrying Data Between Apps
+* `participant.vars` is a dictionary available during the experiment.
+--
+* One can add to this field and the value will be kept for all apps, for all players.
+
+
+```python
+participant.vars['my_field'] = 1
+```
+---
+## Timeouts 
+
+* You can set timeouts for pages. 
+* By default, it would try to submit if there is a form, and proceed the participant in the next page.
+
+--
+
+```python
+class MyPage(Page):
+    timeout_seconds = 60
+```
+---
+## Detecting Timeouts
+* `before_next_page` is another special function defined in pages.
+--
+* It triggers for each player some desired functions.
+--
+* It will be supplied with two arguments, `player` object and `timeout_happend`
+--
+
+
+```python
+class Consent(Page):
+    timeout_seconds = 30
+
+    def before_next_page(player, timeout_happened):
+        if timeout_happened:
+            player.timed_out = True
+
+    def app_after_this_page(player, upcoming_apps):
+        if player.timed_out:
+            return "timeout"
+
+    def before_next_page(player, timeout_happened):
+        if timeout_happened:
+            player.timed_out = True
+```
+---
+## Using Javascript
+* Runs on the browser 
+
+--
+
+* Integrates with HTML items.
+
+--
+
+* While oTree handles backend (and basic frontend), JavaScript and HTML can be used in combination to create custom front-end
+
+---
+# Form items with JavaScript
+* Let's find a slider:
+
+Mozilla Developers Network - Web Docs  
+https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/range
+
+
+
+--
+&lt;img src="images/slider.png" width="30%" style="display: block; margin: auto;" /&gt;
+--
+
+```html
+&lt;div&gt;
+  &lt;input type="range" id="volume" name="volume"
+         min="0" max="11"&gt;
+  &lt;label for="volume"&gt;Volume&lt;/label&gt;
+&lt;/div&gt;
+```
+
+---
+# Boosting up the form items with JavaScript
+
+&lt;img src="images/slider_animated.gif" width="20%" style="display: block; margin: auto;" /&gt;
+* HTML
+
+```html
+&lt;div class="slidecontainer"&gt;
+  &lt;input type="range" min="1" max="10" value="5" 
+         class="slider" id="myRange"&gt;
+  &lt;p&gt;Value:  &lt;span id="demo"&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;/div&gt;
+```
+
+--
+
+* JavaScript
+
+```js
+&lt;script&gt;
+var slider = document.getElementById("myRange");
+var output = document.getElementById("demo");
+output.innerHTML = slider.value;
+
+slider.oninput = function() {
+  output.innerHTML = this.value;
+}
+&lt;/script&gt;
+```
+---
+
+## HTML CheatSheet
+* Tables
+   * `&lt;table&gt; &lt;/table&gt;` defines a table
+   * `&lt;tr&gt;&lt;/tr&gt;` defines each row
+   * `&lt;td&gt;&lt;/td&gt;` defines each column.
+   
+   
+* DIV
+  * `&lt;div&gt;&lt;/div&gt;` defines a section in html
+
+* Span 
+  * `&lt;span&gt;&lt;/span&gt;` it is an inline container. 
+  
+* ID's and Classes
+  * Id's are unique
+     * `&lt;span id="TitleSpan"&gt;&lt;/span&gt;`
+  * Classes are not unique
+     * `&lt;span class="menuItem"&gt;&lt;/span&gt;`
+
+---
+
+## JavaScript CheatSheet
+* All javascript goes to `&lt;script&gt;&lt;/script&gt;` in HTML
+
+--
+
+* Expressions should be ended with `;`
+
+--
+
+
+* You can define functions variables with `var` or `let`
+
+--
+
+* You can create a function with:
+
+
+```js
+function functionName(arg1,arg2,...) {
+// some things here
+return returnValueHere;
+
+}
+
+```
+* You can print things in the console with `console.log('thingstoprint')`;
+
+* You can retrieve HTML elements with `document.getElementByID('idhere');`.
+
+
+---
+---
+## Cournot Calculator
+* We will add `cournot` app from oTree sample games and add a calculator to that. [link](https://github.com/oTree-org/oTree)
+
+&lt;img src="images/cournot_calculator.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+---
+## HTML
+
+```html
+        &lt;table style="width:50%"&gt;
+            &lt;tr&gt;
+                &lt;td&gt;
+                    You produce: &lt;span id="youValue"&gt; 0&lt;/span&gt;
+                &lt;/td&gt;
+                &lt;td&gt;
+                    &lt;input type="range" min="0" max="30" value="0" class="slider" id="youProd"&gt;
+                &lt;/td&gt;
+            &lt;/tr&gt;
+            &lt;tr&gt;
+                &lt;td&gt;
+                    Other produce: &lt;span id="otherValue"&gt; 0 &lt;/span&gt;
+                &lt;/td&gt;
+                &lt;td&gt;
+                    &lt;input type="range" min="0" max="30" value="0" class="slider" id="otherProd"&gt;
+                &lt;/td&gt;
+            &lt;/tr&gt;
+            &lt;tr&gt;
+                &lt;td&gt; Total Production&lt;/td&gt;
+                &lt;td&gt; &lt;span id="totalProd"&gt;0&lt;/span&gt;&lt;/td&gt;
+            &lt;/tr&gt;
+            &lt;tr&gt;
+                &lt;td&gt; Your Profit&lt;/td&gt;
+                &lt;td&gt; &lt;span id="yourProf"&gt;0&lt;/span&gt;&lt;/td&gt;
+            &lt;/tr&gt;
+        &lt;/table&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+```
+---
+## Javascript
+
+```html
+&lt;script&gt;
+    // Sliders
+    var youProd = document.getElementById('youProd');
+    var otherProd = document.getElementById('otherProd');
+    
+    // HTML Spans
+    var youValue = document.getElementById('youValue');
+    var otherValue = document.getElementById('otherValue');
+    var totalProd = document.getElementById('totalProd');
+    var yourProf = document.getElementById('yourProf');
+
+    // Function trigger after slider use after slider use
+    youProd.oninput = function() {
+        youValue.innerHTML = youProd.value;
+        calculateProfit();
+    }
+
+    otherProd.oninput = function() {
+        otherValue.innerHTML = otherProd.value;
+        calculateProfit();
+    }
+
+    function calculateProfit() {
+        totalProd.innerHTML = parseInt(youProd.value) + parseInt(otherProd.value);
+        price = 60 - (parseInt(youProd.value) + parseInt(otherProd.value));
+        console.log(price);
+        yourProf.innerHTML = price * parseInt(youProd.value);
+    }
+&lt;/script&gt;
+```
+---
+
+## Connecting the template with form
+
+* Using your own custom forms is a bit hacky in oTree
+* What to do?:
+  1. Create a **field** in your `Player` class
+  2. Add it in `form_fields` list in the page
+  3. Create a hidden `&lt;input&gt;` in your HTML
+  4. Let JavaScript change the value ofthe field
+
+---
+# 1. Create the form field
+* Go to `__init__.py`
+
+--
+
+* Add (let's call it this2 `selected_number` field in `Player` class.
+
+--
+
+```python
+class Player(BasePlayer):
+  #...other integer here
+  selected_number = models.IntegerField()
+```
+
+---
+# 2. Add it in form field of the page
+* Go to the `Lottery` page model in `__init__.py`
+
+--
+
+
+```python
+class Lottery(Page):
+    form_model = 'player'
+    form_fields = ['selected_number']
+```
+
+---
+# 3. Create a hidden html input
+
+https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input
+
+
+--
+Example input:
+&lt;div&gt;
+&lt;input type="text" id="name" name="name" value="This is the value"&gt;
+
+&lt;/div&gt;
+--
+
+```
+&lt;input type="text" id="name" name="name" value="This is the value"&gt;
+```
+---
+# 3. Create a hidden html input
+* We should change the name and the id to the field name
+```
+&lt;input type="hidden" name="selected_number" id="selected_number" /&gt;
+```
+---
+# 4. Create the Javascript code to change the field we added
+
+The original
+```
+&lt;script&gt;
+var slider = document.getElementById("myRange");
+var valuetext = document.getElementById("valuetext");
+valuetext.innerHTML = slider.value;
+
+slider.oninput = function() {
+  valuetext.innerHTML = this.value;
+}
+&lt;/script&gt;
+```
+
+---
+
+# 4. Create the Javascript code to change the field we added
+
+Modified JS
+```
+&lt;script&gt;
+var slider = document.getElementById("myRange");
+var valuetext = document.getElementById("valuetext");
+var hiddenfield = document.getElementById("selected_number") // &lt;- Add This
+
+valuetext.innerHTML = slider.value;
+
+slider.oninput = function() {
+  valuetext.innerHTML = this.value;
+  hiddenfield.value = this.value; // &lt;- And this
+}
+&lt;/script&gt;
+```
+---
+## Bots - For Testing
+* oTree has built-in browser testing capability.
+--
+* The code for bot tests should be added to `tests.py`
+--
+
+* As Dec 2021, bots are still using `self` format.
+
+--
+* To start the demo with bots on `settings.py`, session config should get `use_browser_bots = True`
+
+
+```python
+dict(
+        name='trust',
+        app_sequence=['trust'],
+        num_demo_participants=2,
+        real_world_currency_per_point=0.25,
+        use_browser_bots = True,
+     ),
+```
+
+---
+## Writing bot tests
+
+Default structure
+
+```python
+from . import *
+
+class PlayerBot(Bot):
+    def play_round(self):
+       yield PageName     # This will submit the page
+```
+
+---
+
+
+```python
+from . import *
+
+class PlayerBot(Bot):
+    def play_round(self):
+       yield PageName     # This will submit the page
+       yield Return, dict(returned_amount=2)  # This will submit the page with an input
+```
+
+---
+
+
+```python
+class PlayerBot(Bot):
+    def play_round(self):
+        ## You can add conditional statements
+        if self.player.id_in_group == 1:   
+            yield Send, dict(sent_amount=5)
+
+        else:
+            yield Return, dict(returned_amount=2)
+
+        yield Results
+        
+        if self.player.round_number == 4:   
+            yield FinalResults
+```
+
+---
+
+## Bots for the game
+* oTree doesn't have a separate in-game bots setup
+* Thus bots should be programmatically and number of real players should be considered when designing the game
+
+--
+* Public goods game with 1 bot, 2 real players:
+
+ - Players per group: 2
+ 
+
+```python
+def set_payoffs(group: Group):
+    players = group.get_players()
+    contributions = [p.contribution for p in players]
+    
+    # Choice of the robot player
+    contribution_robot = random.choice([1,2,3])
+    
+    # Add to choices
+    contributions_w_robot = contributions.append(contribution_robot)
+    
+    group.total_contribution = sum(contributions)
+    
+    group.individual_share = (
+        group.total_contribution * Constants.multiplier / (Constants.players_per_group + 1) # &lt;----
+    )
+    for p in players:
+        p.payoff = Constants.endowment - p.contribution + group.individual_share
+```
+
+---
+
+## Bots when player timed out
+
+```python
+def some_function(player):
+   if p.timeout = True:
+      p.choice = random.choices([1,2,3])
+  
+
+class Send(Page):
+    form_model = 'group'
+    form_fields = ['sent_amount']
+
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.id_in_group == 1 and player.timeout == False
+```
+---
+## Resources
+* [oTree Documentation](https://otree.readthedocs.io/en/latest/)
+* [oTree Mailinglist](https://groups.google.com/g/otree)
+* [Matteo Ploner's oTree Course](https://matteoploner.eco.unitn.it/courses/oTreeIntro/oTree.html)
+* [oTree Community Book (so far just me)](https://otreecb.netlify.app/intro.html)
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightLines": true,
+"highlightStyle": "github",
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
