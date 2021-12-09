@@ -16,7 +16,8 @@
 * [Groups 1 - Homogeneous Groups 🔗](https://www.saral.it/cereb-otree/slides/otree_group.html)
 ## Dec 2
 * [Groups 2 - Heterogeneous Groups 🔗](https://www.saral.it/cereb-otree/slides/otree_group2.html)
-
+## Dec 9
+* [Matching and Advanced Topics 🔗](https://www.saral.it/cereb-otree/slides/otree_advanced.html#1)
 
 # Announcements & Notes
 ## 2021-12-04 
